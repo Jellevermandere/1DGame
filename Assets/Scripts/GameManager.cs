@@ -1,116 +1,82 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
+
+//todo add
+// sounds
+// direction hint
+// game loop
+// more levels
+// arduino connection
 public class GameManager : MonoBehaviour
 {
-    public enum SpawnMode { linear, radial}
+    public bool isRacing = false;
+    public bool waiting = true;
+    public bool loopingTrack = true;
+    public GameObject[] checkPoints;
+    public RacerController[] racers;
+    public int nrOfLaps = 1;
 
-    [Header("SpawnParameters")]
-    [SerializeField]
-    private GameObject lightBulbPrefab;
-    [SerializeField]
-    private int nrOfBulbs = 10;
-    [SerializeField]
-    private SpawnMode spawnMode = SpawnMode.linear;
-    [SerializeField]
-    private float lightDistance = 1f;
-    [SerializeField]
-    private Vector3 forwardVector = new Vector3(0, 0, 1);
-    [SerializeField]
-    private Vector3 angleShift = Vector3.zero;
-    [Header("GameParameters")]
-    [SerializeField]
-    [Range(0, 1)]
-    private float nrLight;
+    private void Awake()
+    {
+        //FindCheckPoints();
 
-
-    List<LightBulb> lightBulbs = new List<LightBulb>();
-
+    }
     // Start is called before the first frame update
     void Start()
     {
-        SpawnLightBulbs();
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(lightBulbs.Count > 0)
+        if (checkPoints.Length > 0)
         {
-            if (Input.GetKeyDown("left"))
+            Debug.DrawLine(loopingTrack ? checkPoints.Last().transform.position : transform.position, checkPoints[0].transform.position, Color.red);
+
+            for (int i = 1; i < checkPoints.Length; i++)
             {
-                nrLight -= 1 / (float)lightBulbs.Count;
-                if (nrLight < 0) nrLight += 1;
-                nrLight = nrLight % 1;
+                Debug.DrawLine(checkPoints[i - 1].transform.position, checkPoints[i].transform.position, Color.red);
             }
-            else if (Input.GetKeyDown("right"))
-            {
-                nrLight += 1 / (float)lightBulbs.Count;
-                nrLight = nrLight % 1;
-            }
-
         }
 
-        /*
-        if (Input.GetAxisRaw("Horizontal") != 0 && lightBulbs.Count> 0)
+        UpdatePlacement();
+
+        for (int i = 0; i < racers.Length; i++)
         {
-            nrLight += Input.GetAxisRaw("Horizontal") / (float)lightBulbs.Count * Time.deltaTime;
-
-            nrLight = nrLight % 1;
-
-        }
-        */
-
-
-        for (int i = 0; i < lightBulbs.Count; i++)
-        {
-            SetColor(i, 0, 0, 0);
+            racers[i].currentPlace = i + 1;
         }
 
-        SetColor(nrLight, 255, 255, 255);
+
     }
 
-
-    void SpawnLightBulbs()
+    void FindCheckPoints()
     {
-        for (int i = 0; i < nrOfBulbs; i++)
-        {
-
-            LightBulb newBulb;
-            switch (spawnMode)
-            {
-                case SpawnMode.linear:
-                    newBulb = Instantiate(lightBulbPrefab, transform.position + forwardVector * i * lightDistance, transform.rotation).GetComponent<LightBulb>();
-                    break;
-                case SpawnMode.radial:
-                    newBulb = Instantiate(lightBulbPrefab, transform.position + Quaternion.Euler(angleShift.x * i, angleShift.y * i, angleShift.z * i) * forwardVector * lightDistance, transform.rotation).GetComponent<LightBulb>();
-                    break;
-
-                default:
-                    newBulb = Instantiate(lightBulbPrefab, transform.position + Quaternion.Euler(angleShift.x * i, angleShift.y * i, angleShift.z * i) * forwardVector * i * lightDistance, transform.rotation).GetComponent<LightBulb>();
-                    break;
-            }
-
-            
-            lightBulbs.Add(newBulb);
-
-        }
+        checkPoints = GameObject.FindGameObjectsWithTag("CheckPoint");
     }
 
-    void SetColor(int nr, int r, int g, int b)
+    private void UpdatePlacement()
     {
-        if (nr >= lightBulbs.Count) return;
-
-
-        lightBulbs[nr].SetColor(r, g, b);
+        racers = racers.OrderByDescending(a => a.finished).ThenByDescending(a => a.currentLap).ThenByDescending(a => a.currentCheckPoint).ThenByDescending(a => a.raceDistance).ToArray();
     }
 
-    void SetColor(float nr, int r, int g, int b)
+    void findPlayers()
     {
-        if (nr > 1 || nr < 0) return;
-        
 
-        lightBulbs[Mathf.RoundToInt(nr * (lightBulbs.Count-1))].SetColor(r, g, b);
+    }
+
+    public void ToggleRacing()
+    {
+        isRacing = !isRacing;
+        waiting = false;
+    }
+
+    public void ResetLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

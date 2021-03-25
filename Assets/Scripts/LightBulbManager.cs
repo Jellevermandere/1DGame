@@ -8,10 +8,17 @@ public class LightBulbManager : MonoBehaviour
     private GameObject lightBulbPrefab;
 
     [SerializeField]
+    private bool local = true;
+    [SerializeField]
+    private bool UpdateRunTime = false;
+
+    [SerializeField]
     private PlayerRaycaster player;
 
     [SerializeField]
     private float radius = 10;
+    [SerializeField]
+    private int test;
 
     List<LightBulb> lightBulbs = new List<LightBulb>();
 
@@ -24,11 +31,12 @@ public class LightBulbManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //UpdateLightBulbs();
+        if(UpdateRunTime)UpdateLightBulbs();
 
         for (int i = 0; i < player.nrLEDs; i++)
         {
-            lightBulbs[i].SetColor(player.CastRay(PlayerRaycaster.rotate2D(player.transform.right, player.fov / 2f - i * player.fov / (float)player.nrLEDs), i));
+            Vector2 direction = PlayerRaycaster.rotate2D(local ? player.transform.right : Vector3.up, player.fov / 2f - i * player.fov / (float)player.nrLEDs);
+            lightBulbs[i].SetColor(player.CastRay(direction, i));
         }
     }
 
@@ -41,7 +49,8 @@ public class LightBulbManager : MonoBehaviour
                 (
                 lightBulbPrefab,
                 transform.position + Quaternion.Euler(0, -player.fov / 2f + i * player.fov / (float)player.nrLEDs, 0) * transform.forward * radius,
-                transform.rotation
+                transform.rotation,
+                transform
                 ).GetComponent<LightBulb>();
 
             lightBulbs.Add(newBulb);
@@ -60,7 +69,8 @@ public class LightBulbManager : MonoBehaviour
                     (
                     lightBulbPrefab,
                     transform.position,
-                    transform.rotation
+                    transform.rotation,
+                    transform
                     ).GetComponent<LightBulb>();
 
                 lightBulbs.Add(newBulb);
