@@ -17,27 +17,61 @@ public class LightBulbManager : MonoBehaviour
 
     [SerializeField]
     private float radius = 10;
-    [SerializeField]
-    private int test;
 
     List<LightBulb> lightBulbs = new List<LightBulb>();
+    [SerializeField]
+    private int middleLED = 0;
+    byte[] allLEDs = new byte[0];
+
+    [SerializeField]
+    private ArduinoConnector arduinoConnector;
+    [SerializeField]
+    private bool sendData = false;
+
+    [SerializeField] private float updateInterval = 0.5f;
+    private float timer;
 
     // Start is called before the first frame update
     void Start()
     {
         SpawnLightBulbs();
+        allLEDs = new byte[player.nrLEDs*3 + 1];
+        allLEDs[player.nrLEDs * 3] = (byte)'\n';
     }
 
     // Update is called once per frame
     void Update()
     {
         if(UpdateRunTime)UpdateLightBulbs();
-
+        float minAngle = Mathf.Infinity;
         for (int i = 0; i < player.nrLEDs; i++)
         {
             Vector2 direction = PlayerRaycaster.rotate2D(local ? player.transform.right : Vector3.up, player.fov / 2f - i * player.fov / (float)player.nrLEDs);
+
+            if(minAngle > Vector2.Angle(direction, player.transform.right))
+            {
+                minAngle = Vector2.Angle(direction, player.transform.right);
+                middleLED = i;
+            }
+
             lightBulbs[i].SetColor(player.CastRay(direction, i));
         }
+        lightBulbs[middleLED].SetColor(Color.green);
+        UpdateColorBytes();
+
+        
+    }
+
+    private void FixedUpdate()
+    {
+        timer += Time.fixedDeltaTime;
+        if( timer > updateInterval)
+        {
+            if (sendData && arduinoConnector && arduinoConnector.useArduino) arduinoConnector.WriteToArduino(allLEDs);
+            timer = 0f;
+        }
+
+       
     }
 
     void SpawnLightBulbs()
@@ -57,6 +91,17 @@ public class LightBulbManager : MonoBehaviour
         }
         
     }
+
+    void UpdateColorBytes()
+    {
+        for (int i = 0; i < player.nrLEDs; i++)
+        {
+            allLEDs[i * 3] = lightBulbs[i].byteColor[0];
+            allLEDs[i * 3 + 1] = lightBulbs[i].byteColor[1];
+            allLEDs[i * 3 + 2] = lightBulbs[i].byteColor[2];
+        }
+    }
+
 
     void UpdateLightBulbs()
     {

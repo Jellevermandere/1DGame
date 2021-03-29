@@ -9,8 +9,12 @@ public class RacerController : MonoBehaviour
     public int currentLap = 0;
     public bool finished = false;
     public float raceDistance = 0;
+    public float forwardDotProduct = 1f;
     [HideInInspector]
     public GameManager gm;
+
+    [HideInInspector]
+    public Vector3 nextCheckPoint = Vector3.zero;
 
     private void Awake()
     {
@@ -35,24 +39,31 @@ public class RacerController : MonoBehaviour
     private void UpdateDistance()
     {
         raceDistance = 0;
-        Vector3 nextCheck = gm.checkPoints[currentCheckPoint].transform.position;
+        nextCheckPoint = gm.checkPoints[currentCheckPoint].transform.position;
 
         if (currentCheckPoint > 0)
         {
             Vector3 lastCheck = gm.checkPoints[currentCheckPoint - 1].transform.position;
 
             float dist = (transform.position - lastCheck).magnitude;
-            raceDistance = dist * Mathf.Cos(Mathf.Deg2Rad * Vector3.SignedAngle(transform.position - lastCheck, nextCheck - lastCheck, Vector3.up));
+            raceDistance = dist * Mathf.Cos(Mathf.Deg2Rad * Vector3.SignedAngle(transform.position - lastCheck, nextCheckPoint - lastCheck, Vector3.up));
 
-            Debug.DrawLine(transform.position, (nextCheck - lastCheck).normalized * raceDistance + lastCheck);
+            Debug.DrawLine(transform.position, (nextCheckPoint - lastCheck).normalized * raceDistance + lastCheck);
         }
         else
         {
             float dist = (transform.position).magnitude;
-            raceDistance = dist * Mathf.Cos(Mathf.Deg2Rad * Vector3.SignedAngle(transform.position, nextCheck, Vector3.up));
+            raceDistance = dist * Mathf.Cos(Mathf.Deg2Rad * Vector3.SignedAngle(transform.position, nextCheckPoint, Vector3.up));
 
-            Debug.DrawLine(transform.position, (nextCheck).normalized * raceDistance);
+            Debug.DrawLine(transform.position, (nextCheckPoint).normalized * raceDistance);
         }
+
+        CheckForward(nextCheckPoint - transform.position);
+    }
+
+    private void CheckForward(Vector3 direction)
+    {
+        forwardDotProduct = Vector3.Dot(direction, transform.right);
     }
 
     private void OnTriggerEnter2D(Collider2D other)

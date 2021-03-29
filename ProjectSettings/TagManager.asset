@@ -14,8 +14,8 @@ TagManager:
   - UI
   - PP
   - Player
-  - Wall
-  - PlayerLocator
+  - LEDVisable
+  - 
   - 
   - 
   - 

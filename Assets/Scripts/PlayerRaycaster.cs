@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class PlayerRaycaster : MonoBehaviour
 {
-    [SerializeField]
-    private ColorTag[] colorTags;
-
     public float fov = 90f;
     public int nrLEDs = 10;
 
@@ -14,6 +11,16 @@ public class PlayerRaycaster : MonoBehaviour
     private LayerMask environmentMask;
     [SerializeField]
     private float maxDistance = 10f;
+    [SerializeField]
+    private bool useDirectionFlow = true;
+    [SerializeField]
+    [Range(0,1)]
+    private float minDirectionFlowMod;
+    [SerializeField]
+    private float frequency = 1, waveLenght = 1;
+    [SerializeField]
+    private RacerController racerController;
+
 
     float hue = 0;
     float colorVal = 0;
@@ -47,6 +54,7 @@ public class PlayerRaycaster : MonoBehaviour
             colorVal = (Vector2.Dot(hit.normal, transform.right) + 1) / 2f;
             //ledCol = new Color(1, colorVal, colorVal) * (maxDistance - hit.distance) / maxDistance;
             ledCol = Color.HSVToRGB(hue, 1- colorVal, (maxDistance - hit.distance) / maxDistance);
+            if (useDirectionFlow) ledCol *= ForwardWaveModifier(hit.point);
             Debug.DrawLine(transform.position, hit.point, ledCol);
             return ledCol;
         }
@@ -62,9 +70,19 @@ public class PlayerRaycaster : MonoBehaviour
         );
     }
 
-    public class ColorTag
+    float ForwardWaveModifier(Vector3 hitPoint)
     {
-        public string name;
-        public float hue;
+        if (!racerController) return 1;
+        float dotDist = Vector3.Dot((racerController.nextCheckPoint - transform.position).normalized, (hitPoint - transform.position).normalized);
+        float val = Map(Mathf.Sin(-Time.time * frequency + dotDist * waveLenght), -1, 1, minDirectionFlowMod, 1);
+        //float val = Map(Mathf.Sin(Time.time * frequency + Vector3.Distance(transform.position,hitPoint)), -1, 1, minDirectionFlowMod, 1);
+        return val;
     }
+
+    // c#
+    float Map(float s, float a1, float a2, float b1, float b2)
+    {
+        return b1 + (s - a1) * (b2 - b1) / (a2 - a1);
+    }
+
 }

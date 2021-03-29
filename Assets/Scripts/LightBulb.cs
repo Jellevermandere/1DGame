@@ -15,6 +15,8 @@ public class LightBulb : MonoBehaviour
     [SerializeField]
     float intensity = 1.6f;
 
+    public byte[] byteColor = new byte[3];
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,5 +39,12 @@ public class LightBulb : MonoBehaviour
     {
         if (lightMesh) lightMesh.material.SetColor("_EmissionColor", col * intensity);
         lightMesh.material.color = col;
+        byteColor[0] = (byte)Mathf.FloorToInt(Mathf.Clamp(col.r, 0.01f,1f) * 255);
+        byteColor[1] = (byte)Mathf.FloorToInt(Mathf.Clamp(col.g, 0.01f, 1f) * 255);
+        byteColor[2] = (byte)Mathf.FloorToInt(Mathf.Clamp(col.b, 0.01f, 1f) * 255);
+
+        byteColor[0] = (byteColor[0] == 10) ? (byte)9 : byteColor[0];
+        byteColor[1] = (byteColor[1] == 10) ? (byte)9 : byteColor[1];
+        byteColor[2] = (byteColor[2] == 10) ? (byte)9 : byteColor[2];
     }
 }
