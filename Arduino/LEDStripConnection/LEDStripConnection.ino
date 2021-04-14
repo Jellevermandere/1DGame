@@ -5,15 +5,15 @@
 #define DATA_PIN 6                                             // Serial data pin
 #define COLOR_ORDER GRB                                       // It's GRB for WS2812B and BGR for APA102
 #define LED_TYPE WS2812B                                       // What kind of strip are you using (APA102, WS2801 or WS2812B)?
-#define NUM_LEDS 30  
+#define NUM_LEDS 256
 
 // Initialize changeable global variables.
-uint8_t max_bright = 50;                                     // Overall brightness definition. It can be changed on the fly.
+uint8_t max_bright = 128;                                     // Overall brightness definition. It can be changed on the fly.
 
 struct CRGB leds[NUM_LEDS];                                   // Initialize our LED array.
-
-const byte numChars = NUM_LEDS*3 + 1;
-char receivedChars[numChars];   // an array to store the received data
+const byte resolution = 3;
+//const byte numChars = NUM_LEDS*3 + 1;
+char receivedChars[NUM_LEDS*3+1];   // an array to store the received data
 boolean newData = false;
 
 void setup() {
@@ -27,7 +27,7 @@ void setup() {
   {
     leds[i] = 0x00FF00;
     FastLED.show();
-    delay(100);
+    delay(5);
     leds[i] = 0x000000;
   }
   FastLED.show();
@@ -44,7 +44,7 @@ void loop() {
 }
 
 void recvWithEndMarker() {
-    static byte ndx = 0;
+    static int ndx = 0;
     char endMarker = '\n';
     char rc;
     
@@ -54,8 +54,8 @@ void recvWithEndMarker() {
         if (rc != endMarker) {
             receivedChars[ndx] = rc;
             ndx++;
-            if (ndx >= numChars) {
-                ndx = numChars - 1;
+            if (ndx >= NUM_LEDS*3+1) {
+                ndx = NUM_LEDS*3+1;
             }
         }
         else {
@@ -76,7 +76,12 @@ void showNewData() {
           leds[nrLED].r = (int)receivedChars[i];
           leds[nrLED].g = (int)receivedChars[i+1];
           leds[nrLED].b = (int)receivedChars[i+2];
-          nrLED++;
+
+          for (int j = 1; j < resolution; j++) 
+          {
+            leds[nrLED+j] = leds[nrLED];
+          }
+          nrLED += resolution;
         }
         FastLED.show();
         //Serial.print("This just in ... ");

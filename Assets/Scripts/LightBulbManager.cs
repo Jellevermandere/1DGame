@@ -11,6 +11,8 @@ public class LightBulbManager : MonoBehaviour
     private bool local = true;
     [SerializeField]
     private bool UpdateRunTime = false;
+    [SerializeField]
+    private bool showForwardLED = true, showPlacementLED = true;
 
     [SerializeField]
     private PlayerRaycaster player;
@@ -56,10 +58,25 @@ public class LightBulbManager : MonoBehaviour
 
             lightBulbs[i].SetColor(player.CastRay(direction, i));
         }
-        lightBulbs[middleLED].SetColor(Color.green);
+
+        if (showForwardLED)
+        {
+            if (showPlacementLED && player.nrLEDs >= player.racerController.currentPlace)
+            {
+                for (int i = 0; i < player.racerController.currentPlace; i++)
+                {
+                    int nr = middleLED + i - (player.racerController.currentPlace / 2);
+                    lightBulbs[(nr+player.nrLEDs) % player.nrLEDs].SetColor(Color.green);
+                }
+            }
+            else
+            {
+                lightBulbs[middleLED].SetColor(Color.green);
+            }
+        }
+
         UpdateColorBytes();
 
-        
     }
 
     private void FixedUpdate()

@@ -6835,7 +6835,7 @@ GameObject:
   - component: {fileID: 1408173429}
   - component: {fileID: 1408173428}
   - component: {fileID: 1408173431}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Obstacle
   m_TagString: CheckPoint
   m_Icon: {fileID: 0}
@@ -7378,6 +7378,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1830194983 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1007440462759505840, guid: 4a037e4624357459ba3f432cb0096221, type: 3}
+  m_PrefabInstance: {fileID: 1279772212}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cd9e5c4fae8d4745b220cbb603054de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1884335101
 GameObject:
   m_ObjectHideFlags: 0
@@ -7786,12 +7797,14 @@ MonoBehaviour:
   lightBulbPrefab: {fileID: 8257553631264815548, guid: 5a9a04bf9767a4195bc830394ac0ff38, type: 3}
   local: 0
   UpdateRunTime: 0
+  showForwardLED: 1
+  showPlacementLED: 1
   player: {fileID: 479347492}
   radius: 10
   middleLED: 0
   arduinoConnector: {fileID: 2101920113}
-  sendData: 0
-  updateInterval: 0.5
+  sendData: 1
+  updateInterval: 0.1
 --- !u!114 &2101920112
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7824,6 +7837,7 @@ MonoBehaviour:
   racers:
   - {fileID: 479347498}
   - {fileID: 1637293445}
+  - {fileID: 1830194983}
   nrOfLaps: 1
 --- !u!114 &2101920113
 MonoBehaviour:
@@ -7840,6 +7854,7 @@ MonoBehaviour:
   useArduino: 1
   IOPort: /dev/cu.usbmodem1424301
   baudeRate: 115200
+  recievedDirection: 0
 --- !u!1001 &3432992288770333856
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8006,11 +8021,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6853399429429518761, guid: d861614f05e4f41989fa8a82ef0047ca, type: 3}
       propertyPath: nrLEDs
-      value: 30
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 6853399429429518761, guid: d861614f05e4f41989fa8a82ef0047ca, type: 3}
       propertyPath: useDirectionFlow
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d861614f05e4f41989fa8a82ef0047ca, type: 3}

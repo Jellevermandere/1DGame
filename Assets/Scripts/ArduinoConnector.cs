@@ -21,6 +21,8 @@ public class ArduinoConnector : MonoBehaviour
 
     private string recievedValue;
 
+    public float recievedDirection = 0;
+
 
     // Start is called before the first frame update
     void Start()
@@ -37,7 +39,7 @@ public class ArduinoConnector : MonoBehaviour
             {
                 recievedValue = sp.ReadLine(); //reads the serial input
                 Debug.Log(recievedValue);
-                //SetDirection(recievedValue); //translates the string into a Vector
+                SetDirection(recievedValue); //translates the string into a angle
             }
             catch (System.Exception)
             {
@@ -87,4 +89,9 @@ public class ArduinoConnector : MonoBehaviour
 
     }
     //16 9163841391 3469000000 1221186115 2146761481 4374025500 0015514977
+
+    void SetDirection(string message)
+    {
+        float.TryParse(message, out recievedDirection);
+    }
 }

@@ -18,8 +18,8 @@ public class PlayerRaycaster : MonoBehaviour
     private float minDirectionFlowMod;
     [SerializeField]
     private float frequency = 1, waveLenght = 1;
-    [SerializeField]
-    private RacerController racerController;
+    
+    public RacerController racerController;
 
 
     float hue = 0;
