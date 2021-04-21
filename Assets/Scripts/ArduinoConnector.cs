@@ -74,17 +74,21 @@ public class ArduinoConnector : MonoBehaviour
         }
         */
         
-        if (useArduino && sp.IsOpen)
+        if (useArduino)
         {
-            sp.Write(message, 0, message.Length);
-            string mess = "";
-
-            foreach (var item in message)
+            if (sp.IsOpen)
             {
-                mess += item + ", ";
+                sp.Write(message, 0, message.Length);
+                string mess = "";
+
+                foreach (var item in message)
+                {
+                    mess += item + ", ";
+                }
+                Debug.Log(mess);
+                //sp.BaseStream.Flush();
             }
-            Debug.Log(mess);
-            //sp.BaseStream.Flush();
+
         }
 
     }

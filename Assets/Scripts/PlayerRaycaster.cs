@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class PlayerRaycaster : MonoBehaviour
 {
+    [Range(0,360)]
     public float fov = 90f;
+    [Range(1,300)]
     public int nrLEDs = 10;
 
     [SerializeField]
@@ -13,6 +15,8 @@ public class PlayerRaycaster : MonoBehaviour
     private float maxDistance = 10f;
     [SerializeField]
     private bool useDirectionFlow = true;
+    [SerializeField]
+    private bool useNormal = true;
     [SerializeField]
     [Range(0,1)]
     private float minDirectionFlowMod;
@@ -51,12 +55,17 @@ public class PlayerRaycaster : MonoBehaviour
         if (hit.collider != null)
         {
             hue = hit.transform.localScale.z;
-            colorVal = (Vector2.Dot(hit.normal, transform.right) + 1) / 2f;
+            if (useNormal) colorVal = (Vector2.Dot(hit.normal, transform.right) + 1) / 2f;
+            else colorVal = 0;
             //ledCol = new Color(1, colorVal, colorVal) * (maxDistance - hit.distance) / maxDistance;
             ledCol = Color.HSVToRGB(hue, 1- colorVal, (maxDistance - hit.distance) / maxDistance);
             if (useDirectionFlow) ledCol *= ForwardWaveModifier(hit.point);
             Debug.DrawLine(transform.position, hit.point, ledCol);
             return ledCol;
+        }
+        else
+        {
+            Debug.DrawLine(transform.position, transform.position + ((Vector3)direction * maxDistance), Color.black);
         }
 
         return Color.black;

@@ -146,7 +146,14 @@ MonoBehaviour:
   r: 255
   g: 255
   b: 255
+  h: 0
+  s: 0
+  v: 1
+  color:
+    serializedVersion: 2
+    rgba: 4294967295
   intensity: 1.6
+  byteColor: 000000
 --- !u!1001 &8257553630046905160
 PrefabInstance:
   m_ObjectHideFlags: 0

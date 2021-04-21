@@ -6,6 +6,8 @@ public class LightBulbManager : MonoBehaviour
 {
     [SerializeField]
     private GameObject lightBulbPrefab;
+    [SerializeField]
+    private Transform examplePlayer;
 
     [SerializeField]
     private bool local = true;
@@ -45,9 +47,29 @@ public class LightBulbManager : MonoBehaviour
     void Update()
     {
         if(UpdateRunTime)UpdateLightBulbs();
+
+        if(examplePlayer && !local)
+        {
+            examplePlayer.up = player.transform.right;
+        }
+
         float minAngle = Mathf.Infinity;
         for (int i = 0; i < player.nrLEDs; i++)
         {
+            if (local)
+            {
+                if (i == 0)
+                {
+                    Debug.DrawLine(transform.position, lightBulbs[i].transform.position);
+                }
+                else if (i == player.nrLEDs-1)
+                {
+                    Debug.DrawLine(transform.position, lightBulbs[i].transform.position);
+                }
+
+
+            }
+
             Vector2 direction = PlayerRaycaster.rotate2D(local ? player.transform.right : Vector3.up, player.fov / 2f - i * player.fov / (float)player.nrLEDs);
 
             if(minAngle > Vector2.Angle(direction, player.transform.right))
@@ -75,7 +97,7 @@ public class LightBulbManager : MonoBehaviour
             }
         }
 
-        UpdateColorBytes();
+        if(sendData) UpdateColorBytes();
 
     }
 
@@ -99,7 +121,7 @@ public class LightBulbManager : MonoBehaviour
             newBulb = Instantiate
                 (
                 lightBulbPrefab,
-                transform.position + Quaternion.Euler(0, -player.fov / 2f + i * player.fov / (float)player.nrLEDs, 0) * transform.forward * radius,
+                transform.position + transform.rotation * Quaternion.Euler(0, -player.fov / 2f + i * player.fov / (float)player.nrLEDs, 0) * Vector3.forward * radius,
                 transform.rotation,
                 transform
                 ).GetComponent<LightBulb>();
@@ -147,7 +169,7 @@ public class LightBulbManager : MonoBehaviour
 
         for (int i = 0; i < player.nrLEDs; i++)
         {
-            lightBulbs[i].transform.position = transform.position + Quaternion.Euler(0, -player.fov / 2f + i * player.fov / (float)player.nrLEDs, 0) * transform.forward * radius;
+            lightBulbs[i].transform.position = transform.position + transform.rotation * Quaternion.Euler(0, -player.fov / 2f + i * player.fov / (float)player.nrLEDs, 0) * Vector3.forward * radius;
             lightBulbs[i].gameObject.SetActive(true);
         }
     }

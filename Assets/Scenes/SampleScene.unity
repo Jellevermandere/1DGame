@@ -7804,7 +7804,7 @@ MonoBehaviour:
   middleLED: 0
   arduinoConnector: {fileID: 2101920113}
   sendData: 1
-  updateInterval: 0.1
+  updateInterval: 0.05
 --- !u!114 &2101920112
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8021,7 +8021,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6853399429429518761, guid: d861614f05e4f41989fa8a82ef0047ca, type: 3}
       propertyPath: nrLEDs
-      value: 100
+      value: 75
       objectReference: {fileID: 0}
     - target: {fileID: 6853399429429518761, guid: d861614f05e4f41989fa8a82ef0047ca, type: 3}
       propertyPath: useDirectionFlow

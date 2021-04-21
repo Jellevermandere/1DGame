@@ -19,6 +19,8 @@ public class GameManager : MonoBehaviour
     public GameObject[] checkPoints;
     public RacerController[] racers;
     public int nrOfLaps = 1;
+    public bool showDebugLines = false;
+
 
     private void Awake()
     {
@@ -34,15 +36,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (checkPoints.Length > 0)
-        {
-            Debug.DrawLine(loopingTrack ? checkPoints.Last().transform.position : transform.position, checkPoints[0].transform.position, Color.red);
-
-            for (int i = 1; i < checkPoints.Length; i++)
-            {
-                Debug.DrawLine(checkPoints[i - 1].transform.position, checkPoints[i].transform.position, Color.red);
-            }
-        }
+        
 
         UpdatePlacement();
 
@@ -52,6 +46,24 @@ public class GameManager : MonoBehaviour
         }
 
 
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (showDebugLines)
+        {
+            if (checkPoints.Length > 0)
+            {
+                Debug.DrawLine(loopingTrack ? checkPoints.Last().transform.position : transform.position, checkPoints[0].transform.position, Color.red);
+
+                for (int i = 1; i < checkPoints.Length; i++)
+                {
+                    Debug.DrawLine(checkPoints[i - 1].transform.position, checkPoints[i].transform.position, Color.red);
+                }
+            }
+        }
+
+        
     }
 
     void FindCheckPoints()

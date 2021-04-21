@@ -48,14 +48,14 @@ public class RacerController : MonoBehaviour
             float dist = (transform.position - lastCheck).magnitude;
             raceDistance = dist * Mathf.Cos(Mathf.Deg2Rad * Vector3.SignedAngle(transform.position - lastCheck, nextCheckPoint - lastCheck, Vector3.up));
 
-            Debug.DrawLine(transform.position, (nextCheckPoint - lastCheck).normalized * raceDistance + lastCheck);
+            //Debug.DrawLine(transform.position, (nextCheckPoint - lastCheck).normalized * raceDistance + lastCheck);
         }
         else
         {
             float dist = (transform.position).magnitude;
             raceDistance = dist * Mathf.Cos(Mathf.Deg2Rad * Vector3.SignedAngle(transform.position, nextCheckPoint, Vector3.up));
 
-            Debug.DrawLine(transform.position, (nextCheckPoint).normalized * raceDistance);
+            //Debug.DrawLine(transform.position, (nextCheckPoint).normalized * raceDistance);
         }
 
         CheckForward(nextCheckPoint - transform.position);

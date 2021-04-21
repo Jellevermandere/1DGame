@@ -9,13 +9,35 @@ public class LightBulb : MonoBehaviour
     [SerializeField]
     MeshRenderer lightMesh;
 
+    [Header("RGB")]
     [SerializeField]
     [Range(0,255)]
-    int r, g, b;
+    int r;
     [SerializeField]
+    [Range(0, 255)]
+    int g, b;
+
+    [Header("HSV")]
+    [SerializeField]
+    [Range(0, 1)]
+    float h;
+    [SerializeField]
+    [Range(0, 1)]
+    float s, v;
+
+    [SerializeField]
+    [Header("ColorPicker")]
+    private Color32 color;
+
+    [SerializeField]
+    [Space(10)]
     float intensity = 1.6f;
 
     public byte[] byteColor = new byte[3];
+
+    private float oldh, olds, oldv;
+    private int oldr, oldg, oldb;
+    private Color oldCol;
 
     // Start is called before the first frame update
     void Start()
@@ -26,13 +48,49 @@ public class LightBulb : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(UpdateLocally)SetColor(r, g, b);
+        if (UpdateLocally)
+        {
+            if(r != oldr || g != oldg || b != oldb)
+            {
+                oldr = r;
+                oldg = g;
+                oldb = b;
+                color = new Color32((byte)r, (byte)g, (byte)b, 255);
+                Color.RGBToHSV(color, out h,out  s,out v);
+            }
+            if(h != oldh || s != olds || v != oldv)
+            {
+                Color32 newCol = Color.HSVToRGB(h, s, v);
+                color = newCol;
+                r = newCol.r;
+                g = newCol.g;
+                b = newCol.b;
+
+                oldh = h;
+                olds = s;
+                oldv = v;
+            }
+            if(color != oldCol)
+            {
+                r = color.r;
+                g = color.g;
+                b = color.b;
+
+                Color.RGBToHSV(color, out h, out s, out v);
+
+                oldCol = color;
+            }
+
+            SetColor(r, g, b);
+
+
+        }
     }
 
     public void SetColor(int r, int g, int b)
     {
-        if (lightMesh) lightMesh.material.SetColor("_EmissionColor", new Color(r/255f,g/255f,b/255f,1) * intensity);
-        lightMesh.material.color = new Color(r / 255f, g / 255f, b / 255f, 1);
+        SetColor(new Color(r / 255f, g / 255f, b / 255f, 1));
+        
     }
 
     public void SetColor(Color col)
