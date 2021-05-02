@@ -11,6 +11,8 @@ public class PlayerController : MonoBehaviour
     private float turningSpeed;
 
     private float rotationAngle = 0f;
+    [SerializeField]
+    private bool useController = false;
 
 
     private Rigidbody2D rb;
@@ -23,15 +25,32 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (Input.GetAxis("Vertical") != 0 && rb.velocity.magnitude < maxMovementSpeed)
+        if (!useController)
         {
-            rb.AddForce(transform.right * acceleration * Input.GetAxis("Vertical") * Time.fixedDeltaTime, ForceMode2D.Impulse);
+            if (Input.GetAxis("Vertical") != 0 && rb.velocity.magnitude < maxMovementSpeed)
+            {
+                rb.AddForce(transform.right * acceleration * Input.GetAxis("Vertical") * Time.fixedDeltaTime, ForceMode2D.Impulse);
+            }
+            if (Input.GetAxis("Horizontal") != 0)
+            {
+                rotationAngle = rb.rotation - Input.GetAxis("Horizontal") * turningSpeed * Time.fixedDeltaTime;
+                rb.MoveRotation(rotationAngle);
+            }
         }
-        if (Input.GetAxis("Horizontal") != 0)
+        else
         {
-            rotationAngle =  rb.rotation -Input.GetAxis("Horizontal") * turningSpeed * Time.fixedDeltaTime;
-            rb.MoveRotation(rotationAngle);
+            if ((Input.GetAxis("VerticalController")+1)/2f != 0 && rb.velocity.magnitude < maxMovementSpeed)
+            {
+                rb.AddForce(transform.right * acceleration * (Input.GetAxis("VerticalController") + 1) / 2f * Time.fixedDeltaTime, ForceMode2D.Impulse);
+            }
+            if (Input.GetAxis("HorizontalController") != 0)
+            {
+                rotationAngle = rb.rotation - Input.GetAxis("Horizontal") * turningSpeed * Time.fixedDeltaTime;
+                rb.MoveRotation(rotationAngle);
+            }
         }
+
+
     }
 
     

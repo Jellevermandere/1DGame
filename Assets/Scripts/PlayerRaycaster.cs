@@ -55,7 +55,7 @@ public class PlayerRaycaster : MonoBehaviour
         if (hit.collider != null)
         {
             hue = hit.transform.localScale.z;
-            if (useNormal) colorVal = (Vector2.Dot(hit.normal, transform.right) + 1) / 2f;
+            if (useNormal) colorVal = 1- Mathf.Abs(Vector2.Dot(hit.normal, transform.up));  //(Vector2.Dot(hit.normal, transform.up) + 1) / 2f;
             else colorVal = 0;
             //ledCol = new Color(1, colorVal, colorVal) * (maxDistance - hit.distance) / maxDistance;
             ledCol = Color.HSVToRGB(hue, 1- colorVal, (maxDistance - hit.distance) / maxDistance);

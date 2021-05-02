@@ -7795,6 +7795,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lightBulbPrefab: {fileID: 8257553631264815548, guid: 5a9a04bf9767a4195bc830394ac0ff38, type: 3}
+  examplePlayer: {fileID: 0}
   local: 0
   UpdateRunTime: 0
   showForwardLED: 1
@@ -7839,6 +7840,7 @@ MonoBehaviour:
   - {fileID: 1637293445}
   - {fileID: 1830194983}
   nrOfLaps: 1
+  showDebugLines: 0
 --- !u!114 &2101920113
 MonoBehaviour:
   m_ObjectHideFlags: 0

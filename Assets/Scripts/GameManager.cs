@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 
 //todo add
@@ -13,6 +14,8 @@ using UnityEngine.SceneManagement;
 // arduino connection
 public class GameManager : MonoBehaviour
 {
+
+    public static bool readyToStart = false;
     public bool isRacing = false;
     public bool waiting = true;
     public bool loopingTrack = true;
@@ -20,6 +23,8 @@ public class GameManager : MonoBehaviour
     public RacerController[] racers;
     public int nrOfLaps = 1;
     public bool showDebugLines = false;
+    [SerializeField] private Text countDownText;
+    [SerializeField] private Animator animator;
 
 
     private void Awake()
@@ -30,13 +35,19 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+       
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (readyToStart)
+        {
+            readyToStart = false;
+            animator.SetTrigger("start");
+            StartCountDown();
+            
+        }
 
         UpdatePlacement();
 
@@ -91,4 +102,32 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
+
+    void StartCountDown()
+    {
+        if (countDownText) StartCoroutine(CountDown());
+    }
+
+    IEnumerator CountDown()
+    {
+        countDownText.text = "";
+        yield return new WaitForSeconds(1);
+        countDownText.text = "3";
+        yield return new WaitForSeconds(1);
+        countDownText.text = "2";
+        yield return new WaitForSeconds(1);
+        countDownText.text = "1";
+        yield return new WaitForSeconds(1);
+        countDownText.text = "GO!";
+        ToggleRacing();
+        yield return new WaitForSeconds(1);
+        countDownText.text = "";
+    }
+
+    public void SetReady()
+    {
+        readyToStart = true;
+    }
 }
+
+

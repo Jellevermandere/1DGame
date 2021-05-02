@@ -5,13 +5,13 @@
 #define DATA_PIN 6                                             // Serial data pin
 #define COLOR_ORDER GRB                                       // It's GRB for WS2812B and BGR for APA102
 #define LED_TYPE WS2812B                                       // What kind of strip are you using (APA102, WS2801 or WS2812B)?
-#define NUM_LEDS 256
+#define NUM_LEDS 240
 
 // Initialize changeable global variables.
 uint8_t max_bright = 128;                                     // Overall brightness definition. It can be changed on the fly.
 
 struct CRGB leds[NUM_LEDS];                                   // Initialize our LED array.
-const byte resolution = 3;
+const byte resolution = 2;
 //const byte numChars = NUM_LEDS*3 + 1;
 char receivedChars[NUM_LEDS*3+1];   // an array to store the received data
 boolean newData = false;

@@ -11,6 +11,7 @@ public class ArduinoConnector : MonoBehaviour
 {
     [Header("ConnectionSettings")]
     public bool useArduino;
+    public bool recieveData, sendData;
     public string IOPort = "/dev/cu.usbmodem1424301"; //"/dev/cu.HC05-SPPDev"; // Change this to whatever port your Arduino is connected to, this is the port for the specefic bluetooth adaptor used (HC-05 Wireless Bluetooth RF Transceiver)
     public int baudeRate = 115200; //this must match the bauderate of the Arduino script
 
@@ -33,7 +34,7 @@ public class ArduinoConnector : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (useArduino && sp.IsOpen)
+        if (useArduino && sp.IsOpen && recieveData)
         {
             try
             {
@@ -74,7 +75,7 @@ public class ArduinoConnector : MonoBehaviour
         }
         */
         
-        if (useArduino)
+        if (useArduino && sendData && sp!= null)
         {
             if (sp.IsOpen)
             {
@@ -96,6 +97,16 @@ public class ArduinoConnector : MonoBehaviour
 
     void SetDirection(string message)
     {
-        float.TryParse(message, out recievedDirection);
+        if (message.ToLower().Contains("ready")) GameManager.readyToStart = true;
+
+        else
+        {
+            if (!float.TryParse(message, out recievedDirection))
+            {
+                recievedDirection = 0;
+            }
+        }
+
+        
     }
 }
